@@ -1,4 +1,4 @@
-node_modules
+./vue-source/node_modules
 install.cache.json
 dist
 www
