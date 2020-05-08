@@ -19,6 +19,7 @@ export function observe(data) {
 }
 
 function proxy(vm, source, key) {
+    // 把 _data 的属性绑定到vm的外层
     Object.defineProperty(vm, key, {
         get() {
             return vm[source][key];
@@ -31,6 +32,7 @@ function proxy(vm, source, key) {
 
 function initData(vm) {
     let data = vm.$options.data;
+    // 
     data = vm._data = typeof data === 'function' ? data.call(vm) : data || {};
     for(let key in data) {
         proxy(vm, '_data', key);
