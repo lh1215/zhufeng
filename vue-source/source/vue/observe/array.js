@@ -41,7 +41,7 @@ methods.forEach(method => {
         }
 
         if (inserted) observeArray(inserted);
-
+        this.__ob__.dep.notify(); // 通知视图更新
         return r;
     }
 })

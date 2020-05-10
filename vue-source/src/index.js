@@ -20,11 +20,14 @@ const vm = new Vue({
 // vue的特点就是批量更新，防止重复渲染
 
 setTimeout(() => {
-    vm.msg = '你老';
-    vm.msg = '1111'
-    vm.msg = '1111'
-    vm.msg = '1111'
-    vm.msg = '4444'
+    // vm.msg = '你老';
+    // vm.msg = '1111'
+    // vm.msg = '1111'
+    // vm.msg = '1111'
+    // vm.msg = '4444'
+
+    vm.money.push(100); // 数组的依赖收集
+
 }, 1000);
 
 // 什么样的数组会被监测，[0,1,2] observe 不能直接改变数组索引不能被监测到

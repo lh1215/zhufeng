@@ -3,13 +3,17 @@ import { arrayMethods, observeArray } from './array';
 import Dep from './dep';
 export function defineReactive(data, key, value) { // 定义响应式的数据变化
     // 如果value依旧是object的话，需要递归
-    observe(value);
+    let childOb = observe(value);
     let dep = new Dep(); // 收集依赖 收集的事watcher
     Object.defineProperty(data, key, {
         // 依赖收集
         get() {
             if (Dep.target) {
-                dep.depend();
+                // 我们希望存入的watcher不能重复，如果重复会造成更新时多次渲染
+                dep.depend(); // 他想让dep中可以存watcher，我还希望让这个watcher中也存放dep，实现一个多对多的关系
+                if (childOb) {
+                    childOb.dep.depend(); // 数组也收集了当前渲染的watcher
+                }
             }
             return value;
         },
@@ -24,10 +28,16 @@ export function defineReactive(data, key, value) { // 定义响应式的数据�
     })
 }
 class Observe {
-    constructor(data) {
+    constructor(data) { // data是我们刚定义的vm._data
+        // 将用户的数据使用defineProperty重新定义
+        this.dep = new Dep(); // 此 dep 专门为数组而设
+        // 每个对象 包括数组都有一个__ob__属性
+        Object.defineProperty(data, '__ob__', {
+            get: () => this,
+        });
         if (Array.isArray(data)) { // 重写push等方法
             data.__proto__ = arrayMethods; // 把重写的方法赋值给data数组的原型链上
-            observeArray(data);
+            observeArray(data); // 观测数组中的每一项
         } else {
             this.walk(data);
         }
