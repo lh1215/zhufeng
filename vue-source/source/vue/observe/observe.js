@@ -1,18 +1,25 @@
 import { observe } from './index';
 import { arrayMethods, observeArray } from './array';
+import Dep from './dep';
 export function defineReactive(data, key, value) { // 定义响应式的数据变化
     // 如果value依旧是object的话，需要递归
     observe(value);
+    let dep = new Dep(); // 收集依赖 收集的事watcher
     Object.defineProperty(data, key, {
+        // 依赖收集
         get() {
-            console.log('获取数据');
+            if (Dep.target) {
+                dep.depend();
+            }
             return value;
         },
+        // 通知依赖更新
         set(newValue) {
             if (value === newValue) return;
             console.log('设置数据');
             observe(newValue); // 如果你设置的值是一个对象的话，应该进行监控
-            return newValue;
+            value = newValue;
+            dep.notify();
         }
     })
 }

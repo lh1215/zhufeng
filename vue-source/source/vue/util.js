@@ -8,7 +8,10 @@ export const util = {
         }, vm)
     },
     compilerText(node, vm) { // 编译文本，替换{{school.name}}
-        node.textContent = node.textContent.replace(defaultReg, function(...args) {
+        if (!node.expr) {
+            node.expr = node.textContent; // 给节点增加了一个自定义属性，为了方便后续的更新操作
+        }
+        node.textContent = node.expr.replace(defaultReg, function(...args) {
             return util.getValue(vm, args[1]);
         });
     }

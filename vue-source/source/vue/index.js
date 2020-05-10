@@ -32,7 +32,6 @@ Vue.prototype._update = function() {
     // 用用户传入的数据，去更新视图
     let vm = this;
     let el = vm.$el;
-    console.log(el);
     // 创建文档碎片，原因是防止每次操作后都编译真实dom，这样性能不高，操作内存的dom（虚拟的），最后再细化到页面上
     let node = document.createDocumentFragment();
     let firstChild;
@@ -45,7 +44,8 @@ Vue.prototype._update = function() {
     // 需要匹配{{}}的方式来进行替换
 
 
-    // 依赖收集
+    // 依赖收集 属性改变了 需要重新渲染 watcher 和 dep
+    
 }
 
 // 渲染页面 将组建进行挂载
@@ -58,12 +58,13 @@ Vue.prototype.$mount = function() {
     // 渲染 watcher 用于渲染的 watcher
     // vue2.0 组件级别更新，new Vue产生一个组件
     
-    let updateComponent = () => {
-        vm._update();
+    let updateComponent = () => { // 更新组件、渲染的逻辑
+        vm._update(); // 更新组件
     }
 
     new Watcher(vm, updateComponent);
 
+    // 我需要让每个数据 他更改了 需要重新的渲染
 }
 
 export default Vue;
