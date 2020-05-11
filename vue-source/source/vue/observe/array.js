@@ -23,6 +23,16 @@ export function observeArray(inserted) { // 要循环数组依次对数组每一
 
 }
 
+export function dependArray(value) {
+    for (let i = 0; i < value.length; i++) {
+        let currentItem = value[i];
+        currentItem.__ob__ && currentItem.__ob__.dep.depend();
+        if (Array.isArray(currentItem)) {
+            dependArray(currentItem);
+        }
+    }
+}
+
 methods.forEach(method => {
     arrayMethods[method] = function(...args) {
         let r = oldArrayProtoMethods[method].apply(this, args);

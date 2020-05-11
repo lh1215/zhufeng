@@ -67,4 +67,10 @@ Vue.prototype.$mount = function() {
     // 我需要让每个数据 他更改了 需要重新的渲染
 }
 
+Vue.prototype.$watch = function(expr, handler) {
+    // 原理：创建一个watcher
+    let vm = this;
+    new Watcher(vm, expr, handler, {user: true}); // 用户自己定义的方法
+}
+
 export default Vue;

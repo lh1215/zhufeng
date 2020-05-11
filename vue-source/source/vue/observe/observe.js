@@ -1,5 +1,5 @@
 import { observe } from './index';
-import { arrayMethods, observeArray } from './array';
+import { arrayMethods, observeArray, dependArray } from './array';
 import Dep from './dep';
 export function defineReactive(data, key, value) { // 定义响应式的数据变化
     // 如果value依旧是object的话，需要递归
@@ -13,6 +13,7 @@ export function defineReactive(data, key, value) { // 定义响应式的数据�
                 dep.depend(); // 他想让dep中可以存watcher，我还希望让这个watcher中也存放dep，实现一个多对多的关系
                 if (childOb) {
                     childOb.dep.depend(); // 数组也收集了当前渲染的watcher
+                    dependArray(value);
                 }
             }
             return value;

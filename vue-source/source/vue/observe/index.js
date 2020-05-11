@@ -9,7 +9,7 @@ export function initState(vm) {
         initComputed();
     }
     if (opts.watch) {
-        initWatch();
+        initWatch(vm);
     }
 }
 
@@ -40,4 +40,17 @@ function initData(vm) {
     observe(vm._data);
 }
 function initComputed() {}
-function initWatch() {}
+
+function createWatcher(vm, key, handler) {
+    // 内部最终也会使用￥watch方法
+    return vm.$watch(key, handler);
+}
+
+function initWatch(vm) {
+    let watch = vm.$options.watch; // 获取用户传入的watch属性
+    for (let key in watch) { // msg(){}
+        let handler = watch[key];
+        createWatcher(vm, key, handler);
+    }
+
+}

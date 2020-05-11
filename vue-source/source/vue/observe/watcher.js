@@ -1,4 +1,5 @@
 import { pushTarget, popTarget } from "./dep";
+import { util } from "../util";
 
 let id = 0;
 class Watcher {
@@ -14,19 +15,28 @@ class Watcher {
         this.exprOrFn = exprOrFn;
         if (typeof exprOrFn === 'function') {
             this.getter = exprOrFn;
+        } else {
+            this.getter = function() {
+                return util.getValue(vm, exprOrFn);
+            }
+        }
+        if (opts.user) { // 标识自己是用户自己创建的watcher
+            this.user = true;
         }
         this.cb = cb;
         this.deps = [];
         this.depsId = new Set();
         this.opts = opts;
         this.id = id++;
-        this.get();
+        // watch 的(老值)
+        this.value = this.get();
     }
     get() {
         pushTarget(this); // 渲染watcher，传入当前watcher Dep.target = watcher msg变化了 需要让这个watcher重新执行
         // 默认创建watcher 会执行此方法
-        this.getter(); // 让这个当前传入的函数执行
+        let value = this.getter(); // 让这个当前传入的函数执行
         popTarget();
+        return value;
     }
     addDep(dep) { // 同一个watcher，不应该重复记忆
         let id = dep.id;
@@ -41,7 +51,10 @@ class Watcher {
         // this.get();
     }
     run() {
-        this.get();
+        let value = this.get(); // 新值
+        if (this.value != value) {
+            this.cb(value, this.value);
+        }
     }
 }
 

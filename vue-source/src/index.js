@@ -10,11 +10,15 @@ const vm = new Vue({
                 name: '莲塘小学',
                 age: 19
             },
-            money: [{a: '莲塘小学'}, 4, 6]
+            money: [[9], 4, 6]
         }
     },
     computed: {},
-    watch: {},
+    watch: {
+        msg(newValue, oldValue) {
+            console.log(newValue, oldValue);
+        }
+    },
 });
 
 // vue的特点就是批量更新，防止重复渲染
@@ -26,7 +30,10 @@ setTimeout(() => {
     // vm.msg = '1111'
     // vm.msg = '4444'
 
-    vm.money.push(100); // 数组的依赖收集
+    // vm.money[0].push(100); // 数组的依赖收集
+
+    // ----------------------------- watcher的使用
+    vm.msg = 'fdafdafsa';
 
 }, 1000);
 
